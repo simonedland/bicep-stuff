@@ -64,7 +64,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
             id: publicIP[i].id
           }
           subnet: {
-            id: virtualNetwork.properties.subnets[0].id
+            id: virtualNetwork.properties.subnets[i].id
           }
         }
       }
@@ -124,9 +124,9 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-0
           protocol: 'ICMP'
           access: 'Allow'
           direction: 'Inbound'
-          sourceAddressPrefix: '*'
+          sourceAddressPrefix: '192.168.0.0/16'
           sourcePortRange: '*'
-          destinationAddressPrefix: '*'
+          destinationAddressPrefix: '192.168.0.0/16'
           destinationPortRange: '*'
         }
       }  
