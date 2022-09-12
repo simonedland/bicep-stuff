@@ -1,4 +1,17 @@
+/*
+todo
+add a param to refer to eksisting virtual nettwork
+add a param for seperating the VM in difrent subbnets
+add a param for adding a public ip to the VM
+add a param for subnet size
+add a param for using eksisting NSG
+*/
+
+
+
 param location string = 'norwayeast'
+param useexternalVnet bool = false
+param externalVnetID string = ''
 
 var VMName  = 'VM_${uniqueString(resourceGroup().id)}'
 var nicname  = 'NIC_${uniqueString(resourceGroup().id)}'
@@ -11,7 +24,7 @@ param adminUsername string
 @secure()
 param adminPassword string
 
-var numberOfVMs = 2
+param numberOfVMs int = 2
 
 resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in range(0,numberOfVMs):{
   name: '${VMName}_${i}'
@@ -64,7 +77,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
             id: publicIP[i].id
           }
           subnet: {
-            id: virtualNetwork.properties.subnets[0].id
+            id: useexternalVnet == true ? string(externalVnetID) : virtualNetwork.properties.subnets[0].id
           }
         }
       }
@@ -72,7 +85,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
   }
 }]
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' =  if (useexternalVnet == false){
   name: vnetname
   location: location
   properties: {
@@ -103,7 +116,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2020-11-01' = [for i in r
   }
 }]
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' =  if (useexternalVnet == false){
   name: NSGname
   location: location
   properties: {
