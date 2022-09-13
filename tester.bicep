@@ -48,7 +48,7 @@ resource exvirtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = if (e
   }
 }
 
-resource exnetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = if (extVNET) {
+resource exnetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = if (extVNET == true) {
   name: NSGname
   location: location
   properties: {
