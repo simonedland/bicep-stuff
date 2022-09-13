@@ -1,6 +1,6 @@
 param location string = 'westus3'
 
-param extVNET bool = true
+var extVNET  = false
 
 var vnetname  = 'VNET_ext_${uniqueString(resourceGroup().id)}'
 var NSGname  = 'NSG_ext_${uniqueString(resourceGroup().id)}'
@@ -10,22 +10,22 @@ param adminUsername string
 @secure()
 param adminPassword string
 
-module test 'modules/VMdeployer.bicep' = {
+module moduletest 'modules/VMdeployer.bicep' = {
   dependsOn: [
     exnetworkSecurityGroup
   ]
   name: 'VMdeployer'
   params: {
-    numberOfVMs: 1
+    numberOfVMs: 2
     adminUsername: adminUsername
     adminPassword: adminPassword
     location: location
     useexternalVnet: extVNET
-    externalVnetID: string(exvirtualNetwork.properties.subnets[0].id)
+    seperateSubnet: true
   }
 }
 
-resource exvirtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = if (extVNET) {
+resource exvirtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = if (extVNET == true) {
   name: vnetname
   location: location
   properties: {

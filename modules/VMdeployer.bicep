@@ -1,6 +1,5 @@
 /*
 todo
-add a param for seperating the VM in difrent subbnets
 add a param for adding a public ip to the VM
 add a param for subnet size
 add a param for using eksisting NSG
@@ -11,6 +10,7 @@ add a param for using eksisting NSG
 param location string = 'westus3'
 param useexternalVnet bool = false
 param externalVnetID string = ''
+param seperateSubnet bool = false
 
 var VMName  = 'VM_${uniqueString(resourceGroup().id)}'
 var nicname  = 'NIC_${uniqueString(resourceGroup().id)}'
@@ -23,7 +23,7 @@ param adminUsername string
 @secure()
 param adminPassword string
 
-param numberOfVMs int = 2
+param numberOfVMs int = 1
 
 resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in range(0,numberOfVMs):{
   name: '${VMName}_${i}'
@@ -76,7 +76,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
             id: publicIP[i].id
           }
           subnet: {
-            id: useexternalVnet == true ? string(externalVnetID) : virtualNetwork.properties.subnets[0].id
+            id: useexternalVnet == true ? string(externalVnetID) : virtualNetwork.properties.subnets[i].id
           }
         }
       }
@@ -93,17 +93,15 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' =  if (us
         '10.0.0.0/16'
       ]
     }
-    subnets: [
-      {
-        name: 'Subnet-1'
+    subnets:[for i in range(0, seperateSubnet ? int(numberOfVMs) : 1 ) :{
+        name: 'subnet${i}'
         properties: {
-          addressPrefix: '10.0.0.0/24'
+          addressPrefix: '10.0.${i}.0/24'
           networkSecurityGroup: {
             id: networkSecurityGroup.id
           }
         }
-      }
-    ]
+      }]
   }
 }
 
