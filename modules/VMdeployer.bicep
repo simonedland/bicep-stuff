@@ -1,6 +1,5 @@
 /*
 todo
-add a param to refer to eksisting virtual nettwork
 add a param for seperating the VM in difrent subbnets
 add a param for adding a public ip to the VM
 add a param for subnet size
@@ -9,7 +8,7 @@ add a param for using eksisting NSG
 
 
 
-param location string = 'norwayeast'
+param location string = 'westus3'
 param useexternalVnet bool = false
 param externalVnetID string = ''
 

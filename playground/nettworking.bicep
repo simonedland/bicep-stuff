@@ -1,4 +1,4 @@
-param location string = 'norwayeast'
+param location string = 'westus3'
 
 var VMName  = 'VM_${uniqueString(resourceGroup().id)}'
 var nicname  = 'NIC_${uniqueString(resourceGroup().id)}'

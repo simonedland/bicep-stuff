@@ -1,7 +1,9 @@
-param location string = 'norwayeast'
+param location string = 'westus3'
 
-var vnetname  = 'VNET_DEV_${uniqueString(resourceGroup().id)}'
-var NSGname  = 'NSG_DEV_${uniqueString(resourceGroup().id)}'
+param extVNET bool = true
+
+var vnetname  = 'VNET_ext_${uniqueString(resourceGroup().id)}'
+var NSGname  = 'NSG_ext_${uniqueString(resourceGroup().id)}'
 
 @secure()
 param adminUsername string
@@ -10,7 +12,7 @@ param adminPassword string
 
 module test 'modules/VMdeployer.bicep' = {
   dependsOn: [
-    networkSecurityGroup
+    exnetworkSecurityGroup
   ]
   name: 'VMdeployer'
   params: {
@@ -18,12 +20,12 @@ module test 'modules/VMdeployer.bicep' = {
     adminUsername: adminUsername
     adminPassword: adminPassword
     location: location
-    useexternalVnet: false
-    externalVnetID: string(virtualNetwork.properties.subnets[0].id)
+    useexternalVnet: extVNET
+    externalVnetID: string(exvirtualNetwork.properties.subnets[0].id)
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
+resource exvirtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = if (extVNET) {
   name: vnetname
   location: location
   properties: {
@@ -38,7 +40,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
         properties: {
           addressPrefix: '10.0.0.0/24'
           networkSecurityGroup: {
-            id: networkSecurityGroup.id
+            id: exnetworkSecurityGroup.id
           }
         }
       }
@@ -46,7 +48,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   }
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = {
+resource exnetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = if (extVNET) {
   name: NSGname
   location: location
   properties: {
