@@ -5,8 +5,6 @@ add a param for subnet size
 add a param for using eksisting NSG
 */
 
-
-
 param location string = 'westus3'
 param useexternalVnet bool = false
 param externalVnetID string = ''
