@@ -1,14 +1,15 @@
 /*
-todo
-add a param for adding a public ip to the VM
-add a param for subnet size
-add a param for using eksisting NSG
+!!todo:add a param for adding a public ip to the VM (cant do it now because of the way i would have to create a array
+  !!in other words: i do not have the knowlege yet
+todo:add a param for subnet size
+todo:add a param for using eksisting NSG
 */
 
 param location string = 'westus3'
 param useexternalVnet bool = false
 param externalVnetID string = ''
 param seperateSubnet bool = false
+param numberOfVMs int = 1
 
 var VMName  = 'VM_${uniqueString(resourceGroup().id)}'
 var nicname  = 'NIC_${uniqueString(resourceGroup().id)}'
@@ -20,8 +21,6 @@ var osDiskName  = 'OSDisk_${uniqueString(resourceGroup().id)}'
 param adminUsername string
 @secure()
 param adminPassword string
-
-param numberOfVMs int = 1
 
 resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in range(0,numberOfVMs):{
   name: '${VMName}_${i}'
@@ -74,7 +73,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2020-11-01' = [fo
             id: publicIP[i].id
           }
           subnet: {
-            id: useexternalVnet == true ? string(externalVnetID) : virtualNetwork.properties.subnets[i].id
+            id: useexternalVnet == true ? string(externalVnetID) : virtualNetwork.properties.subnets[seperateSubnet == false ? 0 : i].id
           }
         }
       }
