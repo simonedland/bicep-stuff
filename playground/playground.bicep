@@ -1,34 +1,34 @@
-param location string = 'norwayeast'
+@secure()
+param administratorLogin string
+@secure()
+param administratorLoginPassword string
 
-@description('allowed : dev, test, prod, live')
-@allowed([
-  'dev'
-  'test'
-  'prod'
-  'live'
-])
-param enviromenttype string = 'dev'
-
-var test = [
+param sqlServerDetails array = [
   {
-    name:'test1'
-    value:'test1'
+    name: 'sqlserver-we'
+    location: 'westeurope'
+    environmentName: 'Production'
   }
   {
-    name:'test2'
-    value:'test2'
+    name: 'sqlserver-eus2'
+    location: 'eastus2'
+    environmentName: 'Development'
   }
   {
-    name:'test3'
-    value:'test3'
+    name: 'sqlserver-eas'
+    location: 'eastasia'
+    environmentName: 'Production'
   }
 ]
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = [for (plan, index) in test: {
-  name: '${plan.name}_${enviromenttype}'
-  location: location
-  sku: {
-    name: 'F1'
-    capacity: 1
+resource sqlServers 'Microsoft.Sql/servers@2021-11-01-preview' = [for sqlServer in sqlServerDetails: if (sqlServer.environmentName == 'Production') {
+  name: sqlServer.name
+  location: sqlServer.location
+  properties: {
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
+  }
+  tags: {
+    environment: sqlServer.environmentName
   }
 }]
