@@ -2,6 +2,7 @@
 param locations array = [
   'westeurope'
   'eastus2'
+  'eastasia'
 ]
 
 @secure()
@@ -12,7 +13,7 @@ param sqlServerAdministratorLogin string
 @description('The administrator login password for the SQL server.')
 param sqlServerAdministratorLoginPassword string
 
-module databases 'database.bcep' = [for location in locations: {
+module databases 'modules/database.bicep' = [for location in locations: {
   name: 'database-${location}'
   params: {
     location: location
