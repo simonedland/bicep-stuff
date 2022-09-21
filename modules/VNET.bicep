@@ -1,3 +1,7 @@
+//todo fiks the ip adress assignment
+//todo make support for multiple adress blocks
+//todo make it possible to assign the placement of subbnett in a spesific adress block
+
 @description('The name of the service to be used for the service discovery')
 param vnetname string= 'vnet1'
 
