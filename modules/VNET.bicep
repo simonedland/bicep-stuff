@@ -14,8 +14,7 @@ param addressPrefix string = '10.0.0.0' //currently only supports one adress blo
 @description('The CIDR of the subnet default is 16')
 param cidrPrefixes string = '16'
 
-//var octets = split(addressPrefix, '.') //dont know if i am going to use this, but it is handy to have
-
+var octets = split(addressPrefix, '.') //dont know if i am going to use this, but it is handy to have
 
 @description('The array of subbnet values and variables')
 param subnets array = [
@@ -28,6 +27,13 @@ param subnets array = [
       name: 'subnet2'
       minimumnumberofips: 126
       adressPrefix: '10.0.1.0'
+      
+}]
+
+var subbnetAdressPrefix = [for subbnet in subnets :{
+    adressprefix: '${octets[0]}.${octets[1]}.${octets[2]}.${octets[3]}'
+    nextadders: '${octets[0]}.${octets[1]}.${subbnet.minimumnumberofips > 127 ? octets[2]+1 : octets[2] }.${octets[3]}'
+    //var octets = split(subbnetAdressPrefix.nextadders, '.')
 }]
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
@@ -41,7 +47,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
     }
     subnets:[for subbnet in subnets :{
         name: subbnet.name
-        properties: { //the calculation of CIDR under might be wrong, but it is just a proof of consept
+        properties: { //the calculation of CIDR under might be wrong, but it is just a proof of consept (azure reserves 5 ip adresses)
           addressPrefix: '${subbnet.adressPrefix}/${subbnet.minimumnumberofips > 127 ? 24 : subbnet.minimumnumberofips > 63 ? 25 : subbnet.minimumnumberofips > 31 ? 26 : subbnet.minimumnumberofips > 15 ? 27 : subbnet.minimumnumberofips > 7 ? 28 : subbnet.minimumnumberofips > 3 ? 29 : subbnet.minimumnumberofips > 1 ? 30 : 31}'
         }
       }]
