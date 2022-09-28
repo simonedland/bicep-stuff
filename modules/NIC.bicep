@@ -24,3 +24,6 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2020-11-01' = {
     ]
   }
 }
+
+output NICid string = networkInterface.id
+output NICobj object = networkInterface
