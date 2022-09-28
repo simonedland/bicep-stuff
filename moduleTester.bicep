@@ -7,7 +7,7 @@ module VNET 'modules/VNET.bicep' = {
     location: location
     addressPrefix: '10.0.0.0'
     cidrPrefixes:'16'
-    NSGid: networkSecurityGroup.id
+    NSGid: NSG.outputs.NSGid
     subnets: [
       {
         name: 'subnet1'
@@ -17,25 +17,25 @@ module VNET 'modules/VNET.bicep' = {
   }
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2019-11-01' = {
-  name: 'name'
-  location: location
-  properties: {
-    securityRules: [
-      {
-        name: 'nsgRule'
-        properties: {
-          description: 'description'
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          destinationPortRange: '*'
-          sourceAddressPrefix: '*'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 100
-          direction: 'Inbound'
-        }
-      }
-    ]
+module NSG 'modules/NSG.bicep' = {
+  name: 'NSG'
+  params: {
+    location: location
+  }
+}
+
+module NIC 'modules/NIC.bicep' = {
+  name: 'NIC'
+  params: {
+    location: location
+    subnetId: VNET.outputs.virtualNetworkName.properties.subnets[0].id
+    publicIPid: publicIP.outputs.publicIPid
+  }
+}
+
+module publicIP 'modules/pubIP.bicep' = {
+  name: 'publicIP'
+  params: {
+    location: location
   }
 }
