@@ -30,7 +30,7 @@ resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = [for i in ra
   ]
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_B1s'
     }
     osProfile: {
       computerName: 'computerName'

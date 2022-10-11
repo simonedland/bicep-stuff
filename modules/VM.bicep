@@ -18,7 +18,7 @@ resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = if (password
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_D1s_v3'
     }
     osProfile: {
       computerName: 'computerName'

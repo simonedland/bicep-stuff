@@ -4,7 +4,7 @@ param adminUsername string
 @secure()
 param adminPassword string
 
-var numberOfVMs = 2
+var numberOfVMs = 3
 var extVNET  = false
 var vnetname  = 'VNET_ext_${uniqueString(resourceGroup().id)}'
 var NSGname  = 'NSG_ext_${uniqueString(resourceGroup().id)}'
