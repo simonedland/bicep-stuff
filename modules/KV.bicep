@@ -50,3 +50,4 @@ resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for i 
   }
 }]
 output keyvaultsecrets array = [keyVaultSecret[0], keyVaultSecret[1], keyVaultSecret[2]]
+output keyvaultname string = keyVault.name

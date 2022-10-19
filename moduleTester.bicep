@@ -25,6 +25,11 @@ module KV 'modules/KV.bicep' = {
   }
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: KV.outputs.keyvaultname
+}
+
+
 module VNET 'modules/VNET.bicep' = {
   name: 'VNET'
   params: {
@@ -78,8 +83,8 @@ module VM 'modules/VM.bicep' = {
     vmSize: 'Standard_B1s'
     location: location
     NICid: NIC.outputs.NICid
-    password: string(KV.outputs.keyvaultsecrets[0]) //'Toor1234567890'
-    passwordConfirm: string(KV.outputs.keyvaultsecrets[1])
-    uname: string(KV.outputs.keyvaultsecrets[2])
+    password: keyVault.getSecret('password') //'Toor1234567890'
+    passwordConfirm: keyVault.getSecret('passwordconfirm')
+    uname: keyVault.getSecret('uname')
   }
 }
