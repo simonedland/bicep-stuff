@@ -1,9 +1,29 @@
-param location string = 'westus3'
+param location string = 'norwayeast'
 @secure()
 param password string
 @secure()
 param passwordconfirm string
 
+module KV 'modules/KV.bicep' = {
+  name: 'KV'
+  params: {
+    location: location
+    secrets: [
+      {
+        name: 'password'
+        value: password
+      }
+      {
+        name: 'passwordconfirm'
+        value: passwordconfirm
+      }
+      {
+        name: 'uname'
+        value: 'Toor'
+      }
+    ]
+  }
+}
 
 module VNET 'modules/VNET.bicep' = {
   name: 'VNET'
@@ -52,12 +72,14 @@ module VM 'modules/VM.bicep' = {
     NSG
     NIC
     publicIP
+    KV
   ]
   params: {
+    vmSize: 'Standard_B1s'
     location: location
     NICid: NIC.outputs.NICid
-    password: password
-    passwordConfirm: passwordconfirm
-    uname: 'Toor'
+    password: string(KV.outputs.keyvaultsecrets[0]) //'Toor1234567890'
+    passwordConfirm: string(KV.outputs.keyvaultsecrets[1])
+    uname: string(KV.outputs.keyvaultsecrets[2])
   }
 }

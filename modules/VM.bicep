@@ -1,7 +1,7 @@
 param NICid string = 'null'
 param location string = 'westus3'
 param VMname string = 'VM1'
-
+param vmSize string = 'Standard_D2s_v3'
 
 @secure()
 param uname string
@@ -18,7 +18,7 @@ resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = if (password
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_D1s_v3'
+      vmSize: vmSize
     }
     osProfile: {
       computerName: 'computerName'
