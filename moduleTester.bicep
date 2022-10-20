@@ -77,14 +77,13 @@ module VM 'modules/VM.bicep' = {
     NSG
     NIC
     publicIP
-    KV
   ]
   params: {
     vmSize: 'Standard_B1s'
     location: location
     NICid: NIC.outputs.NICid
-    password: keyVault.getSecret('password') //'Toor1234567890'
-    passwordConfirm: keyVault.getSecret('passwordconfirm')
-    uname: keyVault.getSecret('uname')
+    password: keyVault.getSecret('${keyVault.name}-password') //'Toor1234567890'
+    passwordConfirm: keyVault.getSecret('${keyVault.name}-passwordconfirm')
+    uname: keyVault.getSecret('${keyVault.name}-uname')
   }
 }

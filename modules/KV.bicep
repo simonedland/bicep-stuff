@@ -3,14 +3,9 @@ var tenantId = subscription().tenantId
 var objektid = '367030a5-218c-47d6-8765-53c0e63f2b30'
 var keyvaultname  = 'kv-${uniqueString(resourceGroup().id)}-001'
 
-param secrets array = [{
-  name: 'test1'
-  key: 'test1'
-}
-{
-  name: 'test2'
-  key: 'test2'
-}
+
+@description('exspects a list of secrets that should have key valye for both the name and key')
+param secrets array = [
 ]
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
@@ -39,6 +34,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
         }
       }
     ]
+    enabledForTemplateDeployment: true
   }
 }
 
@@ -49,5 +45,4 @@ resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for i 
     value: secrets[i].value
   }
 }]
-output keyvaultsecrets array = [keyVaultSecret[0], keyVaultSecret[1], keyVaultSecret[2]]
 output keyvaultname string = keyVault.name
