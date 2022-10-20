@@ -92,5 +92,3 @@ module VM 'modules/VM.bicep' = {
   }
 }
 
-
-
