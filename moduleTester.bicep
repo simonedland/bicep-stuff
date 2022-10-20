@@ -4,6 +4,10 @@ param password string
 @secure()
 param passwordconfirm string
 
+
+//might want to transpose to make it two objekts - one for name and one for value
+//this is bechause i then can make the names and values secure
+//make a param in to two objekts, then set secure on them...
 module KV 'modules/KV.bicep' = {
   name: 'KV'
   params: {
@@ -87,3 +91,6 @@ module VM 'modules/VM.bicep' = {
     uname: keyVault.getSecret('${keyVault.name}-uname')
   }
 }
+
+
+
