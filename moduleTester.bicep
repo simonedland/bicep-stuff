@@ -5,6 +5,22 @@ param password string
 param passwordconfirm string
 
 
+//
+//var secrets = [
+//    {
+//      name: 'password'
+//      value: password
+//    }
+//    {
+//      name: 'passwordconfirm'
+//      value: passwordconfirm
+//    }
+//    {
+//      name: 'uname'
+//      value: 'Toor'
+//    }
+//  ]
+//
 //might want to transpose to make it two objekts - one for name and one for value
 //this is bechause i then can make the names and values secure
 //make a param in to two objekts, then set secure on them...
@@ -83,7 +99,7 @@ module VM 'modules/VM.bicep' = {
     publicIP
   ]
   params: {
-    vmSize: 'Standard_B1s'
+    vmSize: 'Standard_B2s'
     location: location
     NICid: NIC.outputs.NICid
     password: keyVault.getSecret('${keyVault.name}-password') //'Toor1234567890'
