@@ -5,22 +5,23 @@ param password string
 param passwordconfirm string
 
 
-//
-//var secrets = [
-//    {
-//      name: 'password'
-//      value: password
-//    }
-//    {
-//      name: 'passwordconfirm'
-//      value: passwordconfirm
-//    }
-//    {
-//      name: 'uname'
-//      value: 'Toor'
-//    }
-//  ]
-//
+
+var secrets = [
+    {
+      name: 'password'
+      value: password
+    }
+    {
+      name: 'passwordconfirm'
+      value: passwordconfirm
+    }
+    {
+      name: 'uname'
+      value: 'Toor'
+    }
+]
+
+
 //might want to transpose to make it two objekts - one for name and one for value
 //this is bechause i then can make the names and values secure
 //make a param in to two objekts, then set secure on them...
@@ -28,26 +29,14 @@ module KV 'modules/KV.bicep' = {
   name: 'KV'
   params: {
     location: location
-    secrets: [
-      {
-        name: 'password'
-        value: password
-      }
-      {
-        name: 'passwordconfirm'
-        value: passwordconfirm
-      }
-      {
-        name: 'uname'
-        value: 'Toor'
-      }
-    ]
+    secrets: secrets
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource KeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: KV.outputs.keyvaultname
 }
+
 
 
 module VNET 'modules/VNET.bicep' = {
@@ -102,9 +91,9 @@ module VM 'modules/VM.bicep' = {
     vmSize: 'Standard_B2s'
     location: location
     NICid: NIC.outputs.NICid
-    password: keyVault.getSecret('${keyVault.name}-password') //'Toor1234567890'
-    passwordConfirm: keyVault.getSecret('${keyVault.name}-passwordconfirm')
-    uname: keyVault.getSecret('${keyVault.name}-uname')
+    password: KeyVault.getSecret('${KeyVault.name}-password') //'Toor1234567890'
+    passwordConfirm: KeyVault.getSecret('${KeyVault.name}-passwordconfirm')
+    uname: KeyVault.getSecret('${KeyVault.name}-uname')
   }
 }
 

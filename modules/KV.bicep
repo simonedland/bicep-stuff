@@ -45,4 +45,4 @@ resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for i 
     value: secrets[i].value
   }
 }]
-output keyvaultname string = keyVault.name
+output keyvaultname string = keyvaultname
