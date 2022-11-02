@@ -31,7 +31,7 @@ resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = if (password
       adminUsername: uname
       adminPassword: password
     }
-    storageProfile: uselinux == false ? {
+    storageProfile: uselinux == false ? { // if uselinux is false, use windows
       imageReference: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: windowsOffer
@@ -43,7 +43,7 @@ resource windowsVM 'Microsoft.Compute/virtualMachines@2020-12-01' = if (password
         caching: 'ReadWrite'
         createOption: 'FromImage'
       }
-    } : {
+    } : { // Linux
       osDisk: {
         createOption: 'FromImage'
       }

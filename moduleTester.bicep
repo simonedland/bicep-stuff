@@ -103,4 +103,3 @@ module VM 'modules/VM.bicep' = {
     uselinux: true
   }
 }
-
