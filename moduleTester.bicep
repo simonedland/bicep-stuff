@@ -10,7 +10,14 @@ param passwordconfirm string
 // logic app
 //beter key vault
 
-
+module resGroup './modules/RG.bicep' = {
+  scope: subscription()
+  name: 'rg-${location}'
+  params: {
+    name: 'rg-${location}'
+    location: location
+  }
+}
 
 var secrets = [
     {
@@ -33,6 +40,7 @@ var secrets = [
 //make a param in to two objekts, then set secure on them...
 module KV 'modules/KV.bicep' = {
   name: 'KV'
+  scope: resourceGroup(resGroup.name)
   params: {
     location: location
     secrets: secrets
@@ -40,6 +48,7 @@ module KV 'modules/KV.bicep' = {
 }
 
 resource KeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  scope: resourceGroup(resGroup.name)
   name: KV.outputs.keyvaultname
 }
 
@@ -47,6 +56,7 @@ resource KeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
 
 module VNET 'modules/VNET.bicep' = {
   name: 'VNET'
+  scope: resourceGroup(resGroup.name)
   params: {
     vnetname: 'VNET1'
     location: location
@@ -64,6 +74,7 @@ module VNET 'modules/VNET.bicep' = {
 
 module NSG 'modules/NSG.bicep' = {
   name: 'NSG'
+  scope: resourceGroup(resGroup.name)
   params: {
     location: location
   }
@@ -71,6 +82,7 @@ module NSG 'modules/NSG.bicep' = {
 
 module NIC 'modules/NIC.bicep' = {
   name: 'NIC'
+  scope: resourceGroup(resGroup.name)
   params: {
     location: location
     subnetId: VNET.outputs.virtualNetworkName.properties.subnets[0].id
@@ -80,6 +92,7 @@ module NIC 'modules/NIC.bicep' = {
 
 module publicIP 'modules/pubIP.bicep' = {
   name: 'publicIP'
+  scope: resourceGroup(resGroup.name)
   params: {
     location: location
   }
@@ -87,6 +100,7 @@ module publicIP 'modules/pubIP.bicep' = {
 
 module VM 'modules/VM.bicep' = {
   name: 'VM'
+  scope: resourceGroup(resGroup.name)
   dependsOn: [
     VNET
     NSG
