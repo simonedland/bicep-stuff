@@ -4,6 +4,12 @@ param password string
 @secure()
 param passwordconfirm string
 
+// Create a new resource group
+// SSH key in keyvault
+// scaling set
+// logic app
+//beter key vault
+
 
 
 var secrets = [
@@ -94,6 +100,7 @@ module VM 'modules/VM.bicep' = {
     password: KeyVault.getSecret('${KeyVault.name}-password') //'Toor1234567890'
     passwordConfirm: KeyVault.getSecret('${KeyVault.name}-passwordconfirm')
     uname: KeyVault.getSecret('${KeyVault.name}-uname')
+    uselinux: true
   }
 }
 
